@@ -1,24 +1,32 @@
 package de.tum.cit.ase.maze;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
+import java.io.FilenameFilter;
+import java.io.File;
 
 /**
  * The MazeRunnerGame class represents the core of the Maze Runner game.
  * It manages the screens and global resources like SpriteBatch and Skin.
  */
-public class MazeRunnerGame extends Game {
+public class MazeRunnerGame extends Game implements ApplicationListener {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
+    private StartScreen startScreen;
 
     // Sprite Batch for rendering
     private SpriteBatch spriteBatch;
@@ -26,8 +34,13 @@ public class MazeRunnerGame extends Game {
     // UI Skin
     private Skin skin;
 
-    // Character animation downwards
-    private Animation<TextureRegion> characterDownAnimation;
+    // File chooser & Map: choose map in StartScreen and apply that map in GameScreen
+    private NativeFileChooser fileChooser;
+    private TileMap map;
+
+    //
+    boolean isKeyCollected;
+    int numberLives = 4;
 
     /**
      * Constructor for MazeRunnerGame.
@@ -36,6 +49,7 @@ public class MazeRunnerGame extends Game {
      */
     public MazeRunnerGame(NativeFileChooser fileChooser) {
         super();
+        this.fileChooser = fileChooser;
     }
 
     /**
@@ -45,19 +59,12 @@ public class MazeRunnerGame extends Game {
     public void create() {
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
-        this.loadCharacterAnimation(); // Load character animation
-
-        // Play some background music
-        // Background sound
-        Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background.mp3"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
 
         goToMenu(); // Navigate to the menu screen
     }
 
     /**
-     * Switches to the menu screen.
+     * Switches to the menu, start, menu and end screen.
      */
     public void goToMenu() {
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
@@ -67,36 +74,28 @@ public class MazeRunnerGame extends Game {
         }
     }
 
-    /**
-     * Switches to the game screen.
-     */
-    public void goToGame() {
-        this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+    public void goToStart() {
+        this.setScreen(new StartScreen(this)); // Set the current screen to GameScreen
         if (menuScreen != null) {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
         }
     }
 
-    /**
-     * Loads the character animation from the character.png file.
-     */
-    private void loadCharacterAnimation() {
-        Texture walkSheet = new Texture(Gdx.files.internal("character.png"));
-
-        int frameWidth = 16;
-        int frameHeight = 32;
-        int animationFrames = 4;
-
-        // libGDX internal Array instead of ArrayList because of performance
-        Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
-
-        // Add all frames to the animation
-        for (int col = 0; col < animationFrames; col++) {
-            walkFrames.add(new TextureRegion(walkSheet, col * frameWidth, 0, frameWidth, frameHeight));
+    public void goToGame() {
+        this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+        if (startScreen != null) {
+            startScreen.dispose(); // Dispose the menu screen if it exists
+            startScreen = null;
         }
+    }
 
-        characterDownAnimation = new Animation<>(0.1f, walkFrames);
+    public void goToEnd() {
+        this.setScreen(new EndScreen(this)); // Set the current screen to GameScreen
+        if (gameScreen != null) {
+            gameScreen.dispose(); // Dispose the menu screen if it exists
+            gameScreen = null;
+        }
     }
 
     /**
@@ -110,16 +109,23 @@ public class MazeRunnerGame extends Game {
         skin.dispose(); // Dispose the skin
     }
 
-    // Getter methods
+    // Getter & Setter methods
     public Skin getSkin() {
         return skin;
     }
-
-    public Animation<TextureRegion> getCharacterDownAnimation() {
-        return characterDownAnimation;
-    }
-
     public SpriteBatch getSpriteBatch() {
         return spriteBatch;
+    }
+    public NativeFileChooser getFileChooser() {
+        return fileChooser;
+    }
+    public TileMap getMap() {
+        return map;
+    }
+    public void setMap(TileMap map) {
+        this.map = map;
+    }
+    public GameScreen getGameScreen() {
+        return gameScreen;
     }
 }

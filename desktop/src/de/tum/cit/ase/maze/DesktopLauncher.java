@@ -1,9 +1,13 @@
 package de.tum.cit.ase.maze;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
 import games.spooky.gdx.nativefilechooser.desktop.DesktopFileChooser;
+import java.io.FilenameFilter;
+import java.io.File;
 
 /**
  * The DesktopLauncher class is the entry point for the desktop version of the Maze Runner game.
