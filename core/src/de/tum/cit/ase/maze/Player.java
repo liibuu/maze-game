@@ -65,26 +65,27 @@ public class Player extends Entity {
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             state = 2;
             if (mapY <= 64*game.getMap().getMapHeight()) {
-                    if (!Collision.isWallCollisionUp(gameScreen.getBackgroundTable(), mapX, mapY)) {mapY += speed;}
+                if (!Collision.isWallCollisionUp(gameScreen.getBackgroundTable(), mapX, mapY)) {mapY += speed;}
+                if (!Collision.isTrapCollisionUp(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
             }
 //            gameScreen.getCamera().translate(0, speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             state = 0;
             if (mapY >= 64) {
-                    if (!Collision.isWallCollisionDown(gameScreen.getBackgroundTable(), mapX, mapY)) {mapY -= speed;}
+                if (!Collision.isWallCollisionDown(gameScreen.getBackgroundTable(), mapX, mapY)) {mapY -= speed;}
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             state = 3;
             if (mapX >= 64) {
-                    if (!Collision.isWallCollisionLeft(gameScreen.getBackgroundTable(), mapX, mapY)) {mapX -= speed;}
+                if (!Collision.isWallCollisionLeft(gameScreen.getBackgroundTable(), mapX, mapY)) {mapX -= speed;}
             }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             state = 1;
             if (mapX <= 64*game.getMap().getMapWidth()) {
-                    if (!Collision.isWallCollisionRight(gameScreen.getBackgroundTable(), mapX, mapY)) {mapX += speed;}
+                if (!Collision.isWallCollisionRight(gameScreen.getBackgroundTable(), mapX, mapY)) {mapX += speed;}
             }
 
 //            if (gameScreen.getMapTable().hit(mapX,mapY,false) instanceof Trap) {

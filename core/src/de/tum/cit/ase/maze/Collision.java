@@ -12,7 +12,7 @@ public class Collision {
             if (child.getClass().getSimpleName().equals("Trap")
                     && x > child.getX() - 70 // in
                     && x < child.getX() + 50 // out
-                    && y < child.getY() + 30
+                    && y < child.getY() + 35
                     && y > child.getY() - 30)
                 return true;
         }
@@ -25,7 +25,7 @@ public class Collision {
             if (child.getClass().getSimpleName().equals("Trap")
                     && x > child.getX() - 50 // out
                     && x < child.getX() + 70 // in
-                    && y < child.getY() + 30
+                    && y < child.getY() + 35
                     && y > child.getY() - 30)
                 return true;
         }
@@ -36,8 +36,8 @@ public class Collision {
         Array<Actor> children = table.getChildren();
         for (Actor child : children) {
             if (child.getClass().getSimpleName().equals("Trap")
-                    && x < child.getX() + 60
-                    && x > child.getX() - 60
+                    && x < child.getX() + 50
+                    && x > child.getX() - 50
                     && y > child.getY() - 40 // in
                     && y < child.getY() + 30) // out
                 return true;
@@ -49,8 +49,8 @@ public class Collision {
         Array<Actor> children = table.getChildren();
         for (Actor child : children) {
             if (child.getClass().getSimpleName().equals("Trap")
-                    && x < child.getX() + 60
-                    && x > child.getX() - 60
+                    && x < child.getX() + 50
+                    && x > child.getX() - 50
                     && y > child.getY() - 30 // out
                     && y < child.getY() + 50) // in
                 return true;
