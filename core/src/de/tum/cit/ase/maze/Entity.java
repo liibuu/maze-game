@@ -14,4 +14,11 @@ public class Entity extends Actor {
     protected float time = 0f;
     protected int speed = 6;
     protected boolean collision = false;
+
+    public int getMapX() {
+        return mapX;
+    }
+    public int getMapY() {
+        return mapY;
+    }
 }

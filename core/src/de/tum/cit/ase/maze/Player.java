@@ -61,12 +61,13 @@ public class Player extends Entity {
     public void act(float delta){
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
 
+        if (Collision.isTrapCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
+
         // Check for key press
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             state = 2;
             if (mapY <= 64*game.getMap().getMapHeight()) {
                 if (!Collision.isWallCollisionUp(gameScreen.getBackgroundTable(), mapX, mapY)) {mapY += speed;}
-                if (!Collision.isTrapCollisionUp(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
             }
 //            gameScreen.getCamera().translate(0, speed);
         }
@@ -87,24 +88,7 @@ public class Player extends Entity {
             if (mapX <= 64*game.getMap().getMapWidth()) {
                 if (!Collision.isWallCollisionRight(gameScreen.getBackgroundTable(), mapX, mapY)) {mapX += speed;}
             }
-
-//            if (gameScreen.getMapTable().hit(mapX,mapY,false) instanceof Trap) {
-//                game.goToEnd();
-//            };
         }
-
-//        if (state == 2 && mapY + 128 - 6*speed == 512 && mapX + 64 >= 384 && mapX <= 384 + 64) {
-////            collision = true;
-//            game.goToEnd();
-//        }
-
-//        if (state == 2 && mapY + 128 - 6*speed == 512 && mapX + 64 >= 512 && mapX <= 384 + 512) {
-////            collision = true;
-//            if (game.numberLives <= 1) {game.numberLives = 0;}
-//            else {game.numberLives -= 1;}
-//
-//            gameScreen.getMapTable().removeActorAt(291,false);
-//        }
 
         time += delta;
         animation = loadPlayer(state);

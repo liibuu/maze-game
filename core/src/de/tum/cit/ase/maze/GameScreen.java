@@ -156,18 +156,6 @@ public class GameScreen implements Screen {
         stepSoundRock = Gdx.audio.newSound(Gdx.files.internal("sfx_step_rock_l.mp3"));
         stepSoundWater = Gdx.audio.newSound(Gdx.files.internal("sfx_step_water_l.mp3"));
 
-//
-//
-//
-//        for (int i = 0; i < game.numberLives; i ++) {
-//            Live live = new Live();
-//            live.setX(512 + 64*i);
-//            live.setY(512);
-//            mapTable.addActor(live);
-//        }
-//
-
-
         // Lay out 3
         Table table = new Table(); // Create a table for layout
         table.setFillParent(true); // Make the table fill the stage
@@ -184,21 +172,6 @@ public class GameScreen implements Screen {
 
         TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
         table.add(textArea);
-
-//        if (backgroundTable.hit(128,128,true) instanceof Tile) {
-//            System.out.println("meomeo");
-//        }
-
-//        System.out.println(backgroundTable.getChild(15*15 - 1 + 1).getX());
-//        System.out.println(backgroundTable.getChild(15*15 - 1 + 1).getY());
-//        Live live = new Live();
-//        live.setX(512);
-//        live.setY(512);
-//        stage.addActor(live);
-//        System.out.println(stage.hit(512,512,false).getClass().getSimpleName());
-//        System.out.println(Collision.isTrapCollision(mapTable, 580, 448));
-//        System.out.println(key.hit(64, 64, false).getX());
-
     }
 
     // Screen interface methods with necessary functionality

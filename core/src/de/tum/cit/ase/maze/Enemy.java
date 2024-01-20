@@ -64,13 +64,15 @@ public class Enemy extends Entity {
         gameScreen.sinusInput += parentAlpha;
         super.draw(batch, parentAlpha);
 
-        if (gameScreen.sinusInput % 600 <= 299) {
+        if (gameScreen.sinusInput % 300 <= 149) {
             state = 1;
-            batch.draw(currentRegion, mapX + gameScreen.sinusInput % 300, mapY, 64, 64);
+            mapX += 3;
+            batch.draw(currentRegion, mapX, mapY, 64, 64);
         }
         else {
             state = 0;
-            batch.draw(currentRegion, mapX + 300 - gameScreen.sinusInput % 300, mapY, 64, 64);
+            mapX -= 3;
+            batch.draw(currentRegion, mapX, mapY, 64, 64);
         }
     }
 }
