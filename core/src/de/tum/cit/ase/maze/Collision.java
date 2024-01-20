@@ -110,8 +110,8 @@ public class Collision {
         for (int i = 0; i < children.size; i++) {
             Actor child = children.get(i);
             if (child.getClass().getSimpleName().equals("Live")) {
-                if (x > child.getX() - 30 // in
-                        && x < child.getX() + 30 // out
+                if (x > child.getX() - 30
+                        && x < child.getX() + 30
                         && y < child.getY() + 35
                         && y > child.getY() - 30)
                 {return i;}
@@ -125,8 +125,8 @@ public class Collision {
         for (int i = 0; i < children.size; i++) {
             Actor child = children.get(i);
             if (child.getClass().getSimpleName().equals("Key")) {
-                if (x > child.getX() - 30 // in
-                        && x < child.getX() + 30 // out
+                if (x > child.getX() - 30
+                        && x < child.getX() + 30
                         && y < child.getY() + 35
                         && y > child.getY() - 30)
                 {return i;}
