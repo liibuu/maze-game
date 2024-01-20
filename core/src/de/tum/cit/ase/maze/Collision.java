@@ -85,7 +85,7 @@ public class Collision {
 //                    && y < child.getY() + 35
 //                    && y > child.getY() - 30)
 //            {return true;}
-            if (child.getClass().getSimpleName().equals("Enemy")) {
+            if (child.getClass().getSimpleName().equals("Enemy") || child.getClass().getSimpleName().equals("Trap")) {
                 Enemy enemy = (Enemy) child;
                 if (x > enemy.getMapX() - 30 // in
                     && x < enemy.getMapX() + 30 // out
