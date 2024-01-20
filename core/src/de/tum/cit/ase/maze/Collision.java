@@ -79,18 +79,26 @@ public class Collision {
     public static boolean isTrapCollision (Table table, float x, float y) {
         Array<Actor> children = table.getChildren();
         for (Actor child : children) {
-//            if (child.getClass().getSimpleName().equals("Enemy")
-//                    && x > child.getX() - 30 // in
-//                    && x < child.getX() + 30 // out
-//                    && y < child.getY() + 35
-//                    && y > child.getY() - 30)
-//            {return true;}
             if (child.getClass().getSimpleName().equals("Trap")) {
-//                Trap enemy = (Trap) child;
                 if (x > child.getX() - 30 // in
                     && x < child.getX() + 30 // out
                     && y < child.getY() + 35
                     && y > child.getY() - 30)
+                {return true;}
+            }
+        }
+        return false;
+    }
+
+    public static boolean isEnemyCollision (Table table, float x, float y) {
+        Array<Actor> children = table.getChildren();
+        for (Actor child : children) {
+            if (child.getClass().getSimpleName().equals("Enemy")) {
+                Enemy enemy = (Enemy) child;
+                if (x > enemy.getMapX() - 30 // in
+                        && x < enemy.getMapX() + 30 // out
+                        && y < enemy.getMapY() + 35
+                        && y > enemy.getMapY() - 30)
                 {return true;}
             }
         }
