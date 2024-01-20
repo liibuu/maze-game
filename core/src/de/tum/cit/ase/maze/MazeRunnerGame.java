@@ -89,9 +89,24 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
             startScreen = null;
         }
     }
+    public void goToPause() {
+        this.setScreen(new PauseScreen(this)); // Set the current screen to GameScreen
+        if (startScreen != null) {
+            startScreen.dispose(); // Dispose the menu screen if it exists
+            startScreen = null;
+        }
+    }
 
-    public void goToEnd() {
-        this.setScreen(new EndScreen(this)); // Set the current screen to GameScreen
+    public void goToWin() {
+        this.setScreen(new WinScreen(this)); // Set the current screen to GameScreen
+        if (gameScreen != null) {
+            gameScreen.dispose(); // Dispose the menu screen if it exists
+            gameScreen = null;
+        }
+    }
+
+    public void goToLose() {
+        this.setScreen(new LoseScreen(this)); // Set the current screen to GameScreen
         if (gameScreen != null) {
             gameScreen.dispose(); // Dispose the menu screen if it exists
             gameScreen = null;
