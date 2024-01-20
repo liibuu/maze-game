@@ -96,9 +96,24 @@ public class Collision {
             if (child.getClass().getSimpleName().equals("Enemy")) {
                 Enemy enemy = (Enemy) child;
                 if (x > enemy.getMapX() - 30 // in
-                        && x < enemy.getMapX() + 30 // out
-                        && y < enemy.getMapY() + 35
-                        && y > enemy.getMapY() - 30)
+                    && x < enemy.getMapX() + 30 // out
+                    && y < enemy.getMapY() + 35
+                    && y > enemy.getMapY() - 30)
+                {return true;}
+            }
+        }
+        return false;
+    }
+
+    public static boolean isLiveCollision (Table table, float x, float y) {
+        Array<Actor> children = table.getChildren();
+        for (Actor child : children) {
+            if (child.getClass().getSimpleName().equals("Live")) {
+                Live live = (Live) child;
+                if (x > live.getX() - 30 // in
+                    && x < live.getX() + 30 // out
+                    && y < live.getY() + 35
+                    && y > live.getY() - 30)
                 {return true;}
             }
         }

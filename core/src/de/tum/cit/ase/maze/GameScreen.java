@@ -33,6 +33,7 @@ public class GameScreen implements Screen {
     private final Stage stage;
     private final Table mapTable;
     private final Table backgroundTable;
+    private final Table menuTable;
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
     private final BitmapFont font;
@@ -138,9 +139,15 @@ public class GameScreen implements Screen {
                         break;
                     case 5:
                         Key key = new Key();
-                        key.setX(80);
-                        key.setY(80);
+                        key.setX(64 * (i + 1));
+                        key.setY(64 * (j + 1));
                         mapTable.addActor(key);
+                        break;
+                    case 6:
+                        Live live = new Live();
+                        live.setX(64 * (i + 1));
+                        live.setY(64 * (j + 1));
+                        mapTable.addActor(live);
                         break;
                     default:
                         break;
@@ -157,12 +164,12 @@ public class GameScreen implements Screen {
         stepSoundWater = Gdx.audio.newSound(Gdx.files.internal("sfx_step_water_l.mp3"));
 
         // Lay out 3
-        Table table = new Table(); // Create a table for layout
-        table.setFillParent(true); // Make the table fill the stage
-        stage.addActor(table); // Add the table to the stage
+        menuTable = new Table(); // Create a table for layout
+        menuTable.setFillParent(true); // Make the table fill the stage
+        stage.addActor(menuTable); // Add the table to the stage
 
         TextButton goToMenuButton = new TextButton("Back", this.game.getSkin()); // Create and add a button to go to the menu screen
-        table.add(goToMenuButton).pad(0,0,0,0).width(300).row();
+        menuTable.addActor(goToMenuButton);
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -171,7 +178,7 @@ public class GameScreen implements Screen {
         });
 
         TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
-        table.add(textArea);
+        menuTable.add(textArea);
     }
 
     // Screen interface methods with necessary functionality
@@ -191,7 +198,10 @@ public class GameScreen implements Screen {
         // Set up and begin drawing with the sprite batch
 //        game.getSpriteBatch().setProjectionMatrix(camera.combined);
         game.getSpriteBatch().begin(); // Important to call this before drawing anything
-        font.draw(game.getSpriteBatch(), player.localToStageCoordinates(new Vector2(player.mapX, player.mapY)).toString(), 128, 128);
+//        font.draw(game.getSpriteBatch(), player.localToStageCoordinates(new Vector2(player.mapX, player.mapY)).toString(), 128, 128);
+//        font.draw(game.getSpriteBatch(), String.valueOf(game.numberLives), 128, 128);
+//        TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
+//        menuTable.addActor(textArea);
         game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
