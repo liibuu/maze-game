@@ -63,7 +63,11 @@ public class Player extends Entity {
 
         if (Collision.isTrapCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
         else if (Collision.isEnemyCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
-        else if (Collision.isLiveCollision(gameScreen.getMapTable(), mapX, mapY)) {game.numberLives++;}
+        else if (Collision.isLiveCollision(gameScreen.getMapTable(), mapX, mapY) > -1) {
+            Actor actor = gameScreen.getMapTable().getChild(Collision.isLiveCollision(gameScreen.getMapTable(), mapX, mapY));
+            gameScreen.getMapTable().removeActor(actor);
+            game.numberLives++;
+        }
 
         // Check for key press
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {

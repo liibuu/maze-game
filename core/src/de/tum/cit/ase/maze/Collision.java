@@ -105,19 +105,16 @@ public class Collision {
         return false;
     }
 
-    public static boolean isLiveCollision (Table table, float x, float y) {
+    public static int isLiveCollision (Table table, float x, float y) {
         Array<Actor> children = table.getChildren();
-        for (Actor child : children) {
+        for (int i = 0; i < children.size; i++) {
+            Actor child = children.get(i);
             if (child.getClass().getSimpleName().equals("Live")) {
-                Live live = (Live) child;
-                if (x > live.getX() - 30 // in
-                    && x < live.getX() + 30 // out
-                    && y < live.getY() + 35
-                    && y > live.getY() - 30)
-                {return true;}
+                if ((int) x / 64 * 64 == child.getX() && (int) y / 64 * 64 == child.getY())
+                {return i;}
             }
         }
-        return false;
+        return -1;
     }
 
     public static boolean isWallCollisionRight (Table table, float x, float y) {

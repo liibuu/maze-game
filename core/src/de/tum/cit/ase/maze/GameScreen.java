@@ -199,7 +199,7 @@ public class GameScreen implements Screen {
 //        game.getSpriteBatch().setProjectionMatrix(camera.combined);
         game.getSpriteBatch().begin(); // Important to call this before drawing anything
 //        font.draw(game.getSpriteBatch(), player.localToStageCoordinates(new Vector2(player.mapX, player.mapY)).toString(), 128, 128);
-//        font.draw(game.getSpriteBatch(), String.valueOf(game.numberLives), 128, 128);
+        font.draw(game.getSpriteBatch(), String.valueOf(game.numberLives), 128, 128);
 //        TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
 //        menuTable.addActor(textArea);
         game.getSpriteBatch().end(); // Important to call this after drawing everything
