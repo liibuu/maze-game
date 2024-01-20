@@ -110,7 +110,25 @@ public class Collision {
         for (int i = 0; i < children.size; i++) {
             Actor child = children.get(i);
             if (child.getClass().getSimpleName().equals("Live")) {
-                if ((int) x / 64 * 64 == child.getX() && (int) y / 64 * 64 == child.getY())
+                if (x > child.getX() - 30 // in
+                        && x < child.getX() + 30 // out
+                        && y < child.getY() + 35
+                        && y > child.getY() - 30)
+                {return i;}
+            }
+        }
+        return -1;
+    }
+
+    public static int isKeyCollision (Table table, float x, float y) {
+        Array<Actor> children = table.getChildren();
+        for (int i = 0; i < children.size; i++) {
+            Actor child = children.get(i);
+            if (child.getClass().getSimpleName().equals("Key")) {
+                if (x > child.getX() - 30 // in
+                        && x < child.getX() + 30 // out
+                        && y < child.getY() + 35
+                        && y > child.getY() - 30)
                 {return i;}
             }
         }
