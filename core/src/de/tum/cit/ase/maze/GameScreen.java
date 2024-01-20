@@ -173,11 +173,11 @@ public class GameScreen implements Screen {
         });
 
         TextButton goToPauseMenu = new TextButton("Pause", this.game.getSkin()); // Create and add a button to go to the menu screen
-        table.add(goToMenuButton).pad(0,0,0,0).width(300).row();
-        goToMenuButton.addListener(new ChangeListener() {
+        table.add(goToPauseMenu).pad(0,0,0,0).width(300).row();
+        goToPauseMenu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToMenu(); // Change to the game screen when button is pressed
+                game.goToPause(); // Change to the game screen when button is pressed
             }
         });
 
