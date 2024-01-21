@@ -39,7 +39,7 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
     private TileMap map;
 
     //
-    boolean isKeyCollected;
+    boolean isKeyCollected = false;
     int numberLives = 4;
 
     /**

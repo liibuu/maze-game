@@ -96,13 +96,43 @@ public class Collision {
             if (child.getClass().getSimpleName().equals("Enemy")) {
                 Enemy enemy = (Enemy) child;
                 if (x > enemy.getMapX() - 30 // in
-                        && x < enemy.getMapX() + 30 // out
-                        && y < enemy.getMapY() + 35
-                        && y > enemy.getMapY() - 30)
+                    && x < enemy.getMapX() + 30 // out
+                    && y < enemy.getMapY() + 35
+                    && y > enemy.getMapY() - 30)
                 {return true;}
             }
         }
         return false;
+    }
+
+    public static int isLiveCollision (Table table, float x, float y) {
+        Array<Actor> children = table.getChildren();
+        for (int i = 0; i < children.size; i++) {
+            Actor child = children.get(i);
+            if (child.getClass().getSimpleName().equals("Live")) {
+                if (x > child.getX() - 30
+                        && x < child.getX() + 30
+                        && y < child.getY() + 35
+                        && y > child.getY() - 30)
+                {return i;}
+            }
+        }
+        return -1;
+    }
+
+    public static int isKeyCollision (Table table, float x, float y) {
+        Array<Actor> children = table.getChildren();
+        for (int i = 0; i < children.size; i++) {
+            Actor child = children.get(i);
+            if (child.getClass().getSimpleName().equals("Key")) {
+                if (x > child.getX() - 30
+                        && x < child.getX() + 30
+                        && y < child.getY() + 35
+                        && y > child.getY() - 30)
+                {return i;}
+            }
+        }
+        return -1;
     }
 
     public static boolean isWallCollisionRight (Table table, float x, float y) {
