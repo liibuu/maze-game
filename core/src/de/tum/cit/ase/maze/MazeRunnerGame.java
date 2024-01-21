@@ -25,7 +25,7 @@ import java.io.File;
 public class MazeRunnerGame extends Game implements ApplicationListener {
     // Screens
     private MenuScreen menuScreen;
-    private GameScreen gameScreen;
+    private GameScreen gameScreen = null;
     private StartScreen startScreen;
 
     // Sprite Batch for rendering
@@ -83,10 +83,16 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
     }
 
     public void goToGame() {
-        this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
-        if (startScreen != null) {
-            startScreen.dispose(); // Dispose the menu screen if it exists
-            startScreen = null;
+        if (gameScreen == null) {
+            gameScreen = new GameScreen(this);
+        }
+        this.setScreen(gameScreen);
+    }
+
+    public void resetGame() {
+        if (gameScreen != null) {
+            gameScreen.dispose();
+            gameScreen = null;
         }
     }
     public void goToPause() {
