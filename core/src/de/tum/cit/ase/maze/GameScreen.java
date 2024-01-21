@@ -173,7 +173,8 @@ public class GameScreen implements Screen {
         });
 
         TextButton goToPauseMenu = new TextButton("Pause", this.game.getSkin()); // Create and add a button to go to the menu screen
-        table.add(goToPauseMenu).pad(0,0,0,0).width(300).row();
+        table.addActor(goToPauseMenu);
+        goToPauseMenu.setX(500);
         goToPauseMenu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -182,7 +183,8 @@ public class GameScreen implements Screen {
         });
 
         TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
-        table.add(textArea);
+        table.addActor(textArea);
+        textArea.setY(1000);
     }
 
     // Screen interface methods with necessary functionality
