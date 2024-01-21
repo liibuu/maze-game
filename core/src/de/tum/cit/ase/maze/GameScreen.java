@@ -174,7 +174,7 @@ public class GameScreen implements Screen {
 
         TextButton goToPauseMenu = new TextButton("Pause", this.game.getSkin()); // Create and add a button to go to the menu screen
         table.addActor(goToPauseMenu);
-        goToPauseMenu.setX(500);
+        goToPauseMenu.setX(600);
         goToPauseMenu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
