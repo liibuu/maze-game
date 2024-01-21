@@ -161,15 +161,6 @@ public class GameScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
-        TextButton goToMenuButton = new TextButton("Back", this.game.getSkin()); // Create and add a button to go to the menu screen
-        table.addActor(goToMenuButton);
-        goToMenuButton.setX(0);
-        goToMenuButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.goToMenu(); // Change to the game screen when button is pressed
-            }
-        });
 
         TextButton goToPauseMenu = new TextButton("Pause", this.game.getSkin()); // Create and add a button to go to the menu screen
         table.addActor(goToPauseMenu);
