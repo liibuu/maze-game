@@ -5,9 +5,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -35,6 +38,15 @@ public class LoseScreen implements Screen {
 
         // Add a label as a title
         table.add(new Label("Game over ...", this.game.getSkin(), "title")).padBottom(80).row();
+
+        TextButton goToMenuButton = new TextButton("Back to Menu", this.game.getSkin()); // Create and add a button to go to the menu screen
+        table.add(goToMenuButton).padTop(100).width(300).row();
+        goToMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.goToMenu(); // Change to the game screen when button is pressed
+            }
+        });
 
     }
 

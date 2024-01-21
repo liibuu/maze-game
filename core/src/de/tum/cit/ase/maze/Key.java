@@ -9,11 +9,23 @@ import com.badlogic.gdx.utils.Array;
 
 public class Key extends Entity {
     public Key() {
+        int code = 5;
         int frameX = 48;
         int frameY = 64;
         int frameWidth = 16;
         int frameHeight = 16;
         int animationFrames = 2;
+
+        switch (code) {
+            case 0: frameX = 16;  frameY = 0;   break;
+            case 1: frameX = 48;  frameY = 112; break;
+            case 2: frameX = 48;  frameY = 96;  break;
+            case 3: frameX = 112; frameY = 48;  break;
+            case 4: frameX = 64;  frameY = 112; animationFrames = 2; break;
+            case 5: frameX = 48;  frameY = 48;  break;
+            case -1:frameX = 64;  frameY = 144; break;
+            default: frameX = 0;  frameY = 128;
+        }
 
         Texture walkSheet = new Texture(Gdx.files.internal("basictiles.png"));
         Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
