@@ -61,8 +61,8 @@ public class Player extends Entity {
     public void act(float delta){
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
 
-        if (Collision.isTrapCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
-        if (Collision.isEnemyCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
+        if (Collision.isTrapCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToLose();}
+        if (Collision.isEnemyCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToLose();}
 
         // Check for key press
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
