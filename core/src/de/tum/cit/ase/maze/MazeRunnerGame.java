@@ -68,10 +68,7 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
      */
     public void goToMenu() {
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
-        if (gameScreen != null) {
-            gameScreen.dispose(); // Dispose the game screen if it exists
-            gameScreen = null;
-        }
+        resetGame();
     }
 
     public void goToStart() {
@@ -80,22 +77,41 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
             menuScreen.dispose(); // Dispose the menu screen if it exists
             menuScreen = null;
         }
+        resetGame();
     }
 
     public void goToGame() {
-        this.setScreen(new GameScreen(this)); // Set the current screen to GameScreen
+        if (gameScreen == null) {
+            gameScreen = new GameScreen(this);
+        }
+        this.setScreen(gameScreen); // Set the current screen to GameScreen
         if (startScreen != null) {
             startScreen.dispose(); // Dispose the menu screen if it exists
             startScreen = null;
         }
     }
 
-    public void goToEnd() {
-        this.setScreen(new EndScreen(this)); // Set the current screen to GameScreen
+    public void resetGame() {
+        numberLives = 4;
+        isKeyCollected = false;
         if (gameScreen != null) {
-            gameScreen.dispose(); // Dispose the menu screen if it exists
+            gameScreen.dispose();
             gameScreen = null;
         }
+    }
+
+    public void goToPause() {
+        this.setScreen(new PauseScreen(this)); // Set the current screen to GameScreen
+    }
+
+    public void goToWin() {
+        this.setScreen(new WinScreen(this)); // Set the current screen to GameScreen
+        resetGame();
+    }
+
+    public void goToLose() {
+        this.setScreen(new LoseScreen(this)); // Set the current screen to GameScreen
+        resetGame();
     }
 
     /**

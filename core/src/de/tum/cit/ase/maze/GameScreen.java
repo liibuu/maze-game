@@ -168,17 +168,19 @@ public class GameScreen implements Screen {
         menuTable.setFillParent(true); // Make the table fill the stage
         stage.addActor(menuTable); // Add the table to the stage
 
-        TextButton goToMenuButton = new TextButton("Back", this.game.getSkin()); // Create and add a button to go to the menu screen
-        menuTable.addActor(goToMenuButton);
-        goToMenuButton.addListener(new ChangeListener() {
+        TextButton goToPauseMenu = new TextButton("Pause", this.game.getSkin()); // Create and add a button to go to the menu screen
+        menuTable.addActor(goToPauseMenu);
+        goToPauseMenu.setX(500);
+        goToPauseMenu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.goToMenu(); // Change to the game screen when button is pressed
+                game.goToPause(); // Change to the game screen when button is pressed
             }
         });
 
-        TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
-        menuTable.add(textArea);
+        TextArea textArea = new TextArea("Lives:  ", game.getSkin());
+        menuTable.addActor(textArea);
+        textArea.setY(1000);
     }
 
     // Screen interface methods with necessary functionality
@@ -200,6 +202,7 @@ public class GameScreen implements Screen {
         game.getSpriteBatch().begin(); // Important to call this before drawing anything
 //        font.draw(game.getSpriteBatch(), player.localToStageCoordinates(new Vector2(player.mapX, player.mapY)).toString(), 128, 128);
 //        font.draw(game.getSpriteBatch(), String.valueOf(game.numberLives), 128, 128);
+        font.draw(game.getSpriteBatch(), String.valueOf(game.numberLives), 120, 1050);
         font.draw(game.getSpriteBatch(), String.valueOf(game.isKeyCollected), 128, 128);
 //        TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
 //        menuTable.addActor(textArea);

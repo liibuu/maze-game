@@ -3,6 +3,7 @@ package de.tum.cit.ase.maze;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -15,6 +16,7 @@ public class Player extends Entity {
     private MazeRunnerGame game;
     private GameScreen gameScreen;
     private int state;
+//    Sound stepSoundRock = Gdx.audio.newSound(Gdx.files.internal("background.mp3"));;
 
     public Player() {}
 
@@ -61,12 +63,13 @@ public class Player extends Entity {
     public void act(float delta){
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Clear the screen
 
-        if (Collision.isTrapCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
-        else if (Collision.isEnemyCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToEnd();}
+        if (Collision.isTrapCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToLose();}
+        else if (Collision.isEnemyCollision(gameScreen.getMapTable(), mapX, mapY)) {game.goToLose();}
         else if (Collision.isLiveCollision(gameScreen.getMapTable(), mapX, mapY) > -1) {
             Actor actor = gameScreen.getMapTable().getChild(Collision.isLiveCollision(gameScreen.getMapTable(), mapX, mapY));
             gameScreen.getMapTable().removeActor(actor);
             game.numberLives++;
+//            stepSoundRock.play();
         }
         else if (Collision.isKeyCollision(gameScreen.getMapTable(), mapX, mapY) > -1) {
             Actor actor = gameScreen.getMapTable().getChild(Collision.isKeyCollision(gameScreen.getMapTable(), mapX, mapY));
