@@ -2,10 +2,10 @@ package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -28,7 +28,9 @@ import java.util.Properties;
  */
 public class StartScreen implements Screen {
 
+    private final MazeRunnerGame game;
     private final Stage stage;
+    private Sound menuSound;
 
     /**
      * Constructor for MenuScreen. Sets up the camera, viewport, stage, and UI elements.
@@ -36,6 +38,7 @@ public class StartScreen implements Screen {
      * @param game The main game class, used to access global resources and methods.
      */
     public StartScreen(MazeRunnerGame game) {
+        this.game = game;
         var camera = new OrthographicCamera();
         camera.zoom = 1.5f; // further view
 
@@ -122,6 +125,10 @@ public class StartScreen implements Screen {
 
     @Override
     public void show() {
+        game.stopBackgroundMusic();
+        menuSound = Gdx.audio.newSound(Gdx.files.internal("menu.ogg"));
+        menuSound.play();
+
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
     }
@@ -137,5 +144,8 @@ public class StartScreen implements Screen {
 
     @Override
     public void hide() {
+        if (menuSound != null) {
+            menuSound.dispose();
+        }
     }
 }

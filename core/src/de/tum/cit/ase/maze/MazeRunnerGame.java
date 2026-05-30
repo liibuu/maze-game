@@ -1,28 +1,16 @@
 package de.tum.cit.ase.maze;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 import games.spooky.gdx.nativefilechooser.NativeFileChooser;
-import games.spooky.gdx.nativefilechooser.NativeFileChooserCallback;
-import games.spooky.gdx.nativefilechooser.NativeFileChooserConfiguration;
-import java.io.FilenameFilter;
-import java.io.File;
 
 /**
  * The MazeRunnerGame class represents the core of the Maze Runner game.
  * It manages the screens and global resources like SpriteBatch and Skin.
  */
-public class MazeRunnerGame extends Game implements ApplicationListener {
+public class MazeRunnerGame extends Game {
     // Screens
     private MenuScreen menuScreen;
     private GameScreen gameScreen;
@@ -38,9 +26,9 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
     private NativeFileChooser fileChooser;
     private TileMap map;
 
-    //
-    boolean isKeyCollected = false;
+    // numberLives &  numberKeys
     int numberLives = 4;
+    int numberKeys = 0;
 
     /**
      * Constructor for MazeRunnerGame.
@@ -59,12 +47,11 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
     public void create() {
         spriteBatch = new SpriteBatch(); // Create SpriteBatch
         skin = new Skin(Gdx.files.internal("craft/craftacular-ui.json")); // Load UI skin
-
         goToMenu(); // Navigate to the menu screen
     }
 
     /**
-     * Switches to the menu, start, menu and end screen.
+     * Switches to the menu, start, pause, win and lose screen.
      */
     public void goToMenu() {
         this.setScreen(new MenuScreen(this)); // Set the current screen to MenuScreen
@@ -93,7 +80,7 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
 
     public void resetGame() {
         numberLives = 4;
-        isKeyCollected = false;
+        numberKeys = 0;
         if (gameScreen != null) {
             gameScreen.dispose();
             gameScreen = null;
@@ -125,6 +112,10 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
         skin.dispose(); // Dispose the skin
     }
 
+    public void stopBackgroundMusic() {
+        MenuScreen.backgroundMusic.stop();
+    }
+
     // Getter & Setter methods
     public Skin getSkin() {
         return skin;
@@ -140,8 +131,5 @@ public class MazeRunnerGame extends Game implements ApplicationListener {
     }
     public void setMap(TileMap map) {
         this.map = map;
-    }
-    public GameScreen getGameScreen() {
-        return gameScreen;
     }
 }

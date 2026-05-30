@@ -33,6 +33,7 @@ public class PauseScreen implements Screen {
         table.setFillParent(true); // Make the table fill the stage
         stage.addActor(table); // Add the table to the stage
 
+        // Create and add a button to go back to the game screen
         TextButton continueButton = new TextButton("Continue", game.getSkin());
         table.add(continueButton).width(300).row();
         continueButton.addListener(new ChangeListener() {
@@ -42,15 +43,20 @@ public class PauseScreen implements Screen {
             }
         });
 
+        // Create and add a button to go to the menu screen
         TextButton goToMenuButton = new TextButton("Back", this.game.getSkin()); // Create and add a button to go to the menu screen
         table.add(goToMenuButton).padTop(100).width(300).row();
         goToMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (MenuScreen.backgroundMusic != null) {
+                    MenuScreen.backgroundMusic.stop();
+                }
                 game.goToMenu(); // Change to the game screen when button is pressed
             }
         });
 
+        // Create and add a button to go to the start screen
         TextButton goToStartButton = new TextButton("Choose New Map", this.game.getSkin());
         table.add(goToStartButton).padTop(200).width(300).row();
         goToStartButton.addListener(new ChangeListener() {

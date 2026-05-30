@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class Wall extends Entity {
-    // extract the wall image from "basictiles.png"
+public class Exit extends Entity {
+    // extract the exit image from "basictiles.png"
     private static final TextureRegion currentRegion = new TextureRegion(
-            new Texture(Gdx.files.internal("basictiles.png")), 16, 0, 16, 16);
+            new Texture(Gdx.files.internal("basictiles.png")), 0, 112, 16, 16);
 
-    public Wall(float x, float y) {
+    public Exit(float x, float y) {
         super(x,y);
     }
 

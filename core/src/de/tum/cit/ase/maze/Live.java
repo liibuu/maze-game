@@ -8,33 +8,30 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Live extends Entity {
-    public Live() {
-        int frameX = 0;
-        int frameY = 48;
-        int frameWidth = 16;
-        int frameHeight = 16;
-        int animationFrames = 4;
+    // extract the life image from "objects.png"
+    private static final Texture walkSheet = new Texture(Gdx.files.internal("objects.png"));
+    private static final Animation<TextureRegion> animation = new Animation<>(0.1f,
+            new Array<>(new TextureRegion[]{
+                    new TextureRegion(walkSheet, 0 + 0 * 16, 48, 16, 16),
+                    new TextureRegion(walkSheet, 0 + 1 * 16, 48, 16, 16),
+                    new TextureRegion(walkSheet, 0 + 2 * 16, 48, 16, 16),
+                    new TextureRegion(walkSheet, 0 + 3 * 16, 48, 16, 16)}));
 
-        Texture walkSheet = new Texture(Gdx.files.internal("objects.png"));
-        Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
-        for (int col = 0; col < animationFrames; col++) { // Add all frames to the animation
-            walkFrames.add(new TextureRegion(walkSheet, frameX + col * 16, frameY, frameWidth, frameHeight));
-        }
-
-        animation = new Animation<>(0.1f, walkFrames);
+    public Live(float x, float y) {
+        super(x,y);
     }
 
     /**
-     * Guide the tile to act on the stage.
+     * Instructions for the entity to act on the stage.
      */
     @Override
     public void act(float delta){
         time += delta;
-        currentRegion = (TextureRegion) animation.getKeyFrame(time, true);
+        currentRegion = animation.getKeyFrame(time, true);
     }
 
     /**
-     * Guide the tile to be drawn on the stage.
+     * Instructions for the entity to be drawn on the stage.
      */
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);

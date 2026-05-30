@@ -1,28 +1,14 @@
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.util.List;
 
 /**
  * The GameScreen class is responsible for rendering the gameplay screen.
@@ -39,11 +25,12 @@ public class GameScreen implements Screen {
     private final BitmapFont font;
 
     private final Player player;
+    float time = 0f;
+    final int initialViewPortWidth;
+    final int initialViewPortHeight;
 
-    Sound stepSoundRock;
-    Sound stepSoundWater;
-    long endPauseTime = 0;
-    float sinusInput = 0f;
+    final TextArea textLives;
+    final TextArea textKeys;
 
     /**
      * Constructor for GameScreen. Sets up the camera and font.
@@ -52,6 +39,8 @@ public class GameScreen implements Screen {
      */
     public GameScreen(MazeRunnerGame game) {
         this.game = game;
+
+        /* Step 1: Set up the screen */
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
@@ -63,8 +52,13 @@ public class GameScreen implements Screen {
 
         Viewport viewport = new ScreenViewport(camera); // Create a viewport with the camera
         stage = new Stage(viewport, game.getSpriteBatch()); // Create a stage for UI elements
+        initialViewPortWidth = viewport.getScreenWidth();
+        initialViewPortHeight = viewport.getScreenHeight();
 
-        // Layout 1: path + wall
+        /* Step 2: Add UI elements based on the map */
+
+        // Layout 1 - background entities
+
         backgroundTable = new Table(); // Create a table for layout
         backgroundTable.setFillParent(true); // Make the table fill the stage
         stage.addActor(backgroundTable); // Add the table to the stage
@@ -72,82 +66,58 @@ public class GameScreen implements Screen {
         for (int i = 0; i < game.getMap().getMapWidth(); i++) { // Add walls and paths
             for (int j = 0; j < game.getMap().getMapHeight(); j++) {
                 switch (game.getMap().getTiles()[i][j]) {
-                    case 0:
-                        Wall wall = new Wall();
-                        wall.setX(64 * (i + 1));
-                        wall.setY(64 * (j + 1));
-                        backgroundTable.addActor(wall);
+                    case 0: // if code equals 0 then add a wall
+                        backgroundTable.addActor(new Wall(64 * (i + 1), 64 * (j + 1)));
                         break;
-                    default:
-                        Path path = new Path();
-                        path.setX(64 * (i + 1));
-                        path.setY(64 * (j + 1));
-                        backgroundTable.addActor(path);
+                    default: // else add a path
+                        backgroundTable.addActor(new Path(64 * (i + 1), 64 * (j + 1)));
                 }
             }
         }
 
-        for (int i = 0; i < game.getMap().getMapWidth()+2; i++) { // Add boundaries
-            Tree upBoundary = new Tree();
-            Tree downBoundary = new Tree();
-            upBoundary.setX(64*i);
-            upBoundary.setY(0);
-            downBoundary.setX(64*i);
-            downBoundary.setY(64*(game.getMap().getMapHeight()+1));
-            backgroundTable.addActor(upBoundary);
-            backgroundTable.addActor(downBoundary);
+        for (int i = 0; i < game.getMap().getMapWidth()+2; i++) { // Add trees (boundaries)
+            backgroundTable.addActor(new Tree(64*i, 0)); // bottom of the map
+            backgroundTable.addActor(new Tree(64*i, 64*(game.getMap().getMapHeight()+1))); // top of the map
         }
 
         for (int j = 1; j < game.getMap().getMapWidth()+1; j++) { // Add boundaries
-            Tree leftBoundary = new Tree();
-            Tree rightBoundary = new Tree();
-            leftBoundary.setX(0);
-            leftBoundary.setY(64*j);
-            rightBoundary.setX(64*(game.getMap().getMapWidth()+1));
-            rightBoundary.setY(64*j);
-            backgroundTable.addActor(leftBoundary);
-            backgroundTable.addActor(rightBoundary);
+            backgroundTable.addActor(new Tree(0, 64*j)); // left edge of the map
+            backgroundTable.addActor(new Tree(64*(game.getMap().getMapWidth()+1), 64*j)); // right edge of the map
         }
 
-        // Layout 2: trap + entry point + exit + enemy + key + live
+        // Layout 2 - live entities
+
         mapTable = new Table(); // Create a table for layout
         mapTable.setFillParent(true); // Make the table fill the stage
         stage.addActor(mapTable); // Add the table to the stage
 
-        int playerInitialX = 64;
-        int playerInitialY = 64;
-        for (int i = 0; i < game.getMap().getMapWidth(); i++) {
+        int playerInitialX = 0; // Initialize x,y for the player
+        int playerInitialY = 0;
+
+        for (int i = 0; i < game.getMap().getMapWidth(); i++) { // Add dynamic things
             for (int j = 0; j < game.getMap().getMapHeight(); j++) {
 
                 switch (game.getMap().getTiles()[i][j]) {
-                    case 1:
-                        playerInitialX = 64*(i + 1);
+                    case 1: // if code equals 1 then add an entry
+                        playerInitialX = 64*(i + 1); // the player starts at the entry point
                         playerInitialY = 64*(j + 1);
-                        camera.translate(64*(i + 1), 64*(j + 1));
+                        mapTable.addActor(new Entry(playerInitialX, playerInitialY));
+                        camera.translate(playerInitialX, playerInitialY); // camera focuses on the player
                         break;
-                    case 2:
+                    case 2: // if code equals 2 then add an exit
+                        mapTable.addActor(new Exit(64 * (i + 1), 64 * (j + 1)));
                         break;
-                    case 3:
-                        Trap trap = new Trap();
-                        trap.setX(64 * (i + 1));
-                        trap.setY(64 * (j + 1));
-                        mapTable.addActor(trap);
+                    case 3: // if code equals 3 then add a trap
+                        mapTable.addActor(new Trap(64 * (i + 1), 64 * (j + 1)));
                         break;
-                    case 4:
-                        Enemy enemy = new Enemy(this, 64*(i+1), 64*(j+1));
-                        mapTable.addActor(enemy);
+                    case 4: // if code equals 4 then add an enemy
+                        mapTable.addActor(new Enemy(64 * (i + 1), 64 * (j + 1), this));
                         break;
-                    case 5:
-                        Key key = new Key();
-                        key.setX(64 * (i + 1));
-                        key.setY(64 * (j + 1));
-                        mapTable.addActor(key);
+                    case 5: // if code equals 5 then add a key
+                        mapTable.addActor(new Key(64 * (i + 1), 64 * (j + 1)));
                         break;
-                    case 6:
-                        Live live = new Live();
-                        live.setX(64 * (i + 1));
-                        live.setY(64 * (j + 1));
-                        mapTable.addActor(live);
+                    case 6: // if code equals 6 then add a live
+                        mapTable.addActor(new Live(64 * (i + 1), 64 * (j + 1)));
                         break;
                     default:
                         break;
@@ -156,32 +126,28 @@ public class GameScreen implements Screen {
         }
 
         // Add player
-        player = new Player(this, playerInitialX, playerInitialY);
+        player = new Player(playerInitialX, playerInitialY, this); // Add player
         mapTable.addActor(player);
 
-        // Event sound
-        stepSoundRock = Gdx.audio.newSound(Gdx.files.internal("sfx_step_rock_l.mp3"));
-        stepSoundWater = Gdx.audio.newSound(Gdx.files.internal("sfx_step_water_l.mp3"));
+        // Layout 3 - menu & information
 
-        // Lay out 3
         menuTable = new Table(); // Create a table for layout
         menuTable.setFillParent(true); // Make the table fill the stage
         stage.addActor(menuTable); // Add the table to the stage
 
-        TextButton goToPauseMenu = new TextButton("Pause", this.game.getSkin()); // Create and add a button to go to the menu screen
-        menuTable.addActor(goToPauseMenu);
-        goToPauseMenu.setX(500);
-        goToPauseMenu.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                game.goToPause(); // Change to the game screen when button is pressed
-            }
-        });
+        textLives = new TextArea("Lives:  ", game.getSkin());
+        menuTable.addActor(textLives);
+        textLives.setX(670);
+        textLives.setY(-15);
+        textLives.setHeight(60);
 
-        TextArea textArea = new TextArea("Lives:  ", game.getSkin());
-        menuTable.addActor(textArea);
-        textArea.setY(1000);
+        textKeys = new TextArea("Keys:  ", game.getSkin());
+        menuTable.addActor(textKeys);
+        textKeys.setX(textLives.getX());
+        textKeys.setY(textLives.getY()-60);
+        textKeys.setHeight(60);
     }
+
 
     // Screen interface methods with necessary functionality
     @Override
@@ -189,29 +155,23 @@ public class GameScreen implements Screen {
 
         ScreenUtils.clear(0, 0, 0, 1); // Clear the screen
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f)); // Update the stage
+        // Update labels with current game data
+        textLives.setText("Lives: " + game.numberLives);
+        textKeys.setText("Keys: " + game.numberKeys);
         stage.draw(); // Draw the stage
 
         camera.update(); // Update the camera
-
-        // Move text in a circular path to have an example of a moving object
-//        sinusInput += delta;
-//        float textX = (float) (camera.position.x + Math.sin(sinusInput) * 100);
-//        float textY = (float) (camera.position.y + Math.cos(sinusInput) * 100);
-        // Set up and begin drawing with the sprite batch
-//        game.getSpriteBatch().setProjectionMatrix(camera.combined);
-        game.getSpriteBatch().begin(); // Important to call this before drawing anything
-//        font.draw(game.getSpriteBatch(), player.localToStageCoordinates(new Vector2(player.mapX, player.mapY)).toString(), 128, 128);
-//        font.draw(game.getSpriteBatch(), String.valueOf(game.numberLives), 128, 128);
-        font.draw(game.getSpriteBatch(), String.valueOf(game.numberLives), 120, 1050);
-        font.draw(game.getSpriteBatch(), String.valueOf(game.isKeyCollected), 128, 128);
-//        TextArea textArea = new TextArea("Lives: " + game.numberLives, game.getSkin());
-//        menuTable.addActor(textArea);
-        game.getSpriteBatch().end(); // Important to call this after drawing everything
     }
 
     @Override
     public void resize(int width, int height) {
         camera.setToOrtho(false);
+        stage.getViewport().update(width,height,true);
+
+        menuTable.getChild(0).setX(670 + initialViewPortWidth/1.3f - Gdx.graphics.getWidth()/1.3f);
+        menuTable.getChild(0).setY(-15 - initialViewPortHeight/1.3f + Gdx.graphics.getHeight()/1.3f);
+        menuTable.getChild(1).setX(menuTable.getChild(0).getX());
+        menuTable.getChild(1).setY(menuTable.getChild(0).getY() - 60);
     }
 
     @Override
@@ -224,8 +184,23 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        MenuScreen.backgroundMusic.play();
+
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
+
+        // Set up an input processor to listen for key presses
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (keycode == Input.Keys.ESCAPE) {
+                    // Go to the pause screen when 'Esc' is pressed
+                    game.goToPause();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -243,20 +218,19 @@ public class GameScreen implements Screen {
     public Stage getStage() {
         return stage;
     }
-
     public OrthographicCamera getCamera() {
         return camera;
     }
-
     public MazeRunnerGame getGame() {
         return game;
     }
-
     public Table getMapTable() {
         return mapTable;
     }
-
     public Table getBackgroundTable() {
         return backgroundTable;
+    }
+    public Table getMenuTable() {
+        return menuTable;
     }
 }

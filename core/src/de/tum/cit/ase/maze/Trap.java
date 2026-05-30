@@ -8,33 +8,28 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Trap extends Entity {
-    public Trap() {
-        int frameX = 80;
-        int frameY = 48;
-        int frameWidth = 16;
-        int frameHeight = 16;
-        int animationFrames = 2;
+    // extract the trap image from "basictiles.png"
+    private static final Texture walkSheet = new Texture(Gdx.files.internal("basictiles.png"));
+    private static final Animation<TextureRegion> animation = new Animation<>(0.1f,
+            new Array<>(new TextureRegion[]{
+                    new TextureRegion(walkSheet, 80, 48 + 0 * 16, 16, 16),
+                    new TextureRegion(walkSheet, 80, 48 + 1 * 16, 16, 16)}));
 
-        Texture walkSheet = new Texture(Gdx.files.internal("basictiles.png"));
-        Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
-        for (int col = 0; col < animationFrames; col++) { // Add all frames to the animation
-            walkFrames.add(new TextureRegion(walkSheet, frameX, frameY + col * 16, frameWidth, frameHeight));
-        }
-
-        animation = new Animation<>(0.1f, walkFrames);
+    public Trap(float x, float y) {
+        super(x,y);
     }
 
     /**
-     * Guide the tile to act on the stage.
+     * Instructions for the entity to act on the stage.
      */
     @Override
     public void act(float delta){
         time += delta;
-        currentRegion = (TextureRegion) animation.getKeyFrame(time, true);
+        currentRegion = animation.getKeyFrame(time, true);
     }
 
     /**
-     * Guide the tile to be drawn on the stage.
+     * Instructions for the entity to be drawn on the stage.
      */
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);

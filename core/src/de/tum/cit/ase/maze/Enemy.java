@@ -1,7 +1,6 @@
 package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,70 +8,111 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Enemy extends Entity {
-    private GameScreen gameScreen;
+    private final MazeRunnerGame game;
+    private final GameScreen gameScreen;
+    private final CollisionEnemy collisionEnemy;
     private int state;
+    private static final Texture walkSheet = new Texture(Gdx.files.internal("mobs.png"));
 
-    public Enemy() {}
+    // extract the enemy image pointing at left from "mobs.png"
+    private static final Animation<TextureRegion> animationLeft = new Animation<>(0.1f,
+            new Array<>(new TextureRegion[]{
+                    new TextureRegion(walkSheet, 96 + 0 * 16, 80, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 1 * 16, 80, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 2 * 16, 80, 16, 16)}));
 
-    public Enemy(GameScreen gameScreen, int mapX, int mapY) {
+    // extract the enemy image pointing at right from "mobs.png"
+    private static final Animation<TextureRegion> animationRight = new Animation<>(0.1f,
+            new Array<>(new TextureRegion[]{
+                    new TextureRegion(walkSheet, 96 + 0 * 16, 96, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 1 * 16, 96, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 2 * 16, 96, 16, 16)}));
+
+    // extract the enemy image pointing at down from "mobs.png"
+    private static final Animation<TextureRegion> animationDown = new Animation<>(0.1f,
+            new Array<>(new TextureRegion[]{
+                    new TextureRegion(walkSheet, 96 + 0 * 16, 64, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 1 * 16, 64, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 2 * 16, 64, 16, 16)}));
+
+    // extract the enemy image pointing at up from "mobs.png"
+    private static final Animation<TextureRegion> animationUp = new Animation<>(0.1f,
+            new Array<>(new TextureRegion[]{
+                    new TextureRegion(walkSheet, 96 + 0 * 16, 112, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 1 * 16, 112, 16, 16),
+                    new TextureRegion(walkSheet, 96 + 2 * 16, 112, 16, 16)}));
+
+    public Enemy(float x, float y, GameScreen gameScreen) {
+        super(x,y);
         this.gameScreen = gameScreen;
-        this.mapX = mapX;
-        this.mapY = mapY;
+        this.game = gameScreen.getGame();
+        this.speed = 4;
+        mapX = x;
+        mapY = y;
+        this.collisionEnemy = new CollisionEnemy(game.getMap().getMapWidth(), game.getMap().getMapHeight());
     }
 
-    /**
-     * Load animation for player with corresponding state: 0 (front), 1 (left), 2 (up), 3 (right), 4 (down).
-     */
-    public static Animation<TextureRegion> loadEnemy(int state) {
-
-        int frameX = 0;
-        int frameY = 0;
-        int frameWidth = 16;
-        int frameHeight = 16;
-        int animationFrames = 3;
-
+    public static TextureRegion loadEnemy(int state, float time) {
         switch (state) {
-            case 0: frameX = 96; frameY = 80; break;
-            case 1: frameX = 96; frameY = 96; break;
+            case 0: return animationDown.getKeyFrame(time, true);
+            case 1: return animationRight.getKeyFrame(time, true);
+            case 2: return animationUp.getKeyFrame(time, true);
+            case 3: return animationLeft.getKeyFrame(time, true);
         }
-
-        Texture walkSheet = new Texture(Gdx.files.internal("mobs.png"));
-        Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class); // libGDX internal Array instead of ArrayList because of performance
-
-        // Add all frames to the animation
-        for (int col = 0; col < animationFrames; col++) {
-            walkFrames.add(new TextureRegion(walkSheet, frameX + col * frameWidth, frameY, frameWidth, frameHeight));
-        }
-
-        return new Animation<>(0.1f, walkFrames);
+        return null;
     }
 
     /**
-     * Guide the player to act on the stage.
+     * Instructions for the entity to act on the stage.
      */
     @Override
     public void act(float delta){
+
         time += delta;
-        animation = loadEnemy(state);
-        currentRegion = (TextureRegion) animation.getKeyFrame(time, true);
+        currentRegion = loadEnemy(state, time);
+
+        // Check for collision with walls
+        if (state == 2) {
+            if (mapY <= 64*game.getMap().getMapHeight() - 64) {
+                if (!collisionEnemy.isWallCollisionUp(gameScreen.getBackgroundTable(), mapX, mapY)) {
+                    mapY += speed;
+                }
+            }
+        }
+        else if (state == 0) {
+            if (mapY >= 64 + 64) {
+                if (!collisionEnemy.isWallCollisionDown(gameScreen.getBackgroundTable(), mapX, mapY)) {
+                    mapY -= speed;
+                }
+            }
+        }
+        else if (state == 3) {
+            if (mapX >= 64 + 64) {
+                if (!collisionEnemy.isWallCollisionLeft(gameScreen.getBackgroundTable(), mapX, mapY)) {
+                    mapX -= speed;
+                }
+            }
+        }
+        else if (state == 1) {
+            if (mapX <= 64*game.getMap().getMapWidth() - 64) {
+                if (!collisionEnemy.isWallCollisionRight(gameScreen.getBackgroundTable(), mapX, mapY)) {
+                    mapX += speed;
+                }
+            }
+        }
     }
 
     /**
-     * Guide the tile to be drawn on the stage.
+     * Instructions for the entity to be drawn on the stage.
      */
     public void draw(Batch batch, float parentAlpha) {
-        gameScreen.sinusInput += parentAlpha;
+        gameScreen.time += parentAlpha;
         super.draw(batch, parentAlpha);
 
-        if (gameScreen.sinusInput % 300 <= 149) {
-            state = 1;
-            mapX += 3;
-            batch.draw(currentRegion, mapX, mapY, 64, 64);
+        if (gameScreen.time % (parentAlpha * 16) == 0) {
+            state = (int) (Math.random() * 4);
         }
-        else {
-            state = 0;
-            mapX -= 3;
-            batch.draw(currentRegion, mapX, mapY, 64, 64);
-        }
+
+        batch.draw(currentRegion, mapX, mapY, 64, 64);
     }
 }

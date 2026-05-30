@@ -23,13 +23,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class MenuScreen implements Screen {
 
+    public static Music backgroundMusic;
     private final Stage stage;
     private final SpriteBatch batch;
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
-    private Music backgroundMusic;
 
-    private float sinusInput = 0f;
+    private float time = 0f;
 
     private Animation<TextureRegion> characterAnimationLeft;
     private Animation<TextureRegion> characterAnimationRight;
@@ -42,8 +42,8 @@ public class MenuScreen implements Screen {
     public MenuScreen(MazeRunnerGame game) {
         this.batch = new SpriteBatch();
         this.game = game;
-        characterAnimationLeft = Player.loadPlayer(1);
-        characterAnimationRight = Player.loadPlayer(3);
+        characterAnimationLeft = Player.animationRight;
+        characterAnimationRight = Player.animationLeft;
 
         // Create and configure the camera for the game view
         camera = new OrthographicCamera();
@@ -71,9 +71,11 @@ public class MenuScreen implements Screen {
         });
 
         // Play some background music
-//        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background.mp3"));
-//        backgroundMusic.setLooping(true);
-//        backgroundMusic.play();
+        if (backgroundMusic == null) {
+            backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background.mp3"));
+            backgroundMusic.setVolume(0.3f);
+            backgroundMusic.setLooping(true);
+        }
     }
 
     @Override
@@ -83,16 +85,16 @@ public class MenuScreen implements Screen {
         stage.draw(); // Draw the stage
 
         // Set up and begin drawing with the sprite batch
-        sinusInput += delta;
+        time += delta;
         batch.setProjectionMatrix(camera.combined);
         batch.begin(); // Important to call this before drawing anything
 
         // Draw the character
-        if ((sinusInput * 100) % 2808 <= 1404) {
-            batch.draw(characterAnimationLeft.getKeyFrame(sinusInput, true), 36 + (sinusInput * 100) % 1404, 504, 64, 128);
+        if ((time * 100) % 2808 <= 1404) {
+            batch.draw(characterAnimationLeft.getKeyFrame(time, true), 36 + (time * 100) % 1404, 504, 64, 128);
         }
         else {
-            batch.draw(characterAnimationRight.getKeyFrame(sinusInput, true), 1440 - (sinusInput * 100) % 1404, 504, 64, 128);
+            batch.draw(characterAnimationRight.getKeyFrame(time, true), 1440 - (time * 100) % 1404, 504, 64, 128);
         }
         batch.end(); // Important to call this after drawing everything
     }
@@ -111,8 +113,18 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
+        // Play the music only if it's not already playing
+        if (!backgroundMusic.isPlaying()) {
+            startBackgroundMusic();
+        }
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public void startBackgroundMusic() {
+        if (backgroundMusic != null && !backgroundMusic.isPlaying()) {
+            backgroundMusic.play();
+        }
     }
 
     // The following methods are part of the Screen interface but are not used in this screen.

@@ -8,46 +8,28 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Key extends Entity {
-    public Key() {
-        int code = 5;
-        int frameX = 48;
-        int frameY = 64;
-        int frameWidth = 16;
-        int frameHeight = 16;
-        int animationFrames = 2;
+    // extract the key image from "basictiles.png"
+    private static final Texture walkSheet = new Texture(Gdx.files.internal("basictiles.png"));
+    private static final Animation<TextureRegion> animation = new Animation<>(0.2f,
+            new Array<>(new TextureRegion[]{
+                    new TextureRegion(walkSheet, 48 + 0 * 16, 48, 16, 16),
+                    new TextureRegion(walkSheet, 48 + 1 * 16, 48, 16, 16)}));
 
-        switch (code) {
-            case 0: frameX = 16;  frameY = 0;   break;
-            case 1: frameX = 48;  frameY = 112; break;
-            case 2: frameX = 48;  frameY = 96;  break;
-            case 3: frameX = 112; frameY = 48;  break;
-            case 4: frameX = 64;  frameY = 112; animationFrames = 2; break;
-            case 5: frameX = 48;  frameY = 48;  break;
-            case -1:frameX = 64;  frameY = 144; break;
-            default: frameX = 0;  frameY = 128;
-        }
-
-        Texture walkSheet = new Texture(Gdx.files.internal("basictiles.png"));
-        Array<TextureRegion> walkFrames = new Array<>(TextureRegion.class);
-        for (int col = 0; col < animationFrames; col++) { // Add all frames to the animation
-            walkFrames.add(new TextureRegion(walkSheet, frameX + col * 16, frameY, frameWidth, frameHeight));
-            walkFrames.add(new TextureRegion(walkSheet, frameX + col * 16, frameY, frameWidth, frameHeight));
-        }
-
-        animation = new Animation<>(0.1f, walkFrames);
+    public Key(float x, float y) {
+        super(x,y);
     }
 
     /**
-     * Guide the tile to act on the stage.
+     * Instructions for the entity to act on the stage.
      */
     @Override
     public void act(float delta){
         time += delta;
-        currentRegion = (TextureRegion) animation.getKeyFrame(time, true);
+        currentRegion = animation.getKeyFrame(time, true);
     }
 
     /**
-     * Guide the tile to be drawn on the stage.
+     * Instructions for the entity to be drawn on the stage.
      */
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);

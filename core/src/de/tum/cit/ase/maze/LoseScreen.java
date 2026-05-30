@@ -2,6 +2,7 @@ package de.tum.cit.ase.maze;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +20,7 @@ public class LoseScreen implements Screen {
     private final SpriteBatch batch;
     private final MazeRunnerGame game;
     private final OrthographicCamera camera;
+    private Sound loseSound;
 
     public LoseScreen(MazeRunnerGame game) {
         this.batch = new SpriteBatch();
@@ -52,6 +54,10 @@ public class LoseScreen implements Screen {
 
     @Override
     public void show() {
+        loseSound = Gdx.audio.newSound(Gdx.files.internal("lose.wav"));
+        loseSound.play();
+        game.stopBackgroundMusic();
+
         // Set the input processor so the stage can receive input events
         Gdx.input.setInputProcessor(stage);
     }
@@ -80,7 +86,7 @@ public class LoseScreen implements Screen {
 
     @Override
     public void hide() {
-
+        loseSound.dispose();
     }
 
     @Override
