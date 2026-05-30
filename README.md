@@ -1,3 +1,4 @@
+![Image](image.png)
 # Maze Runner Game
 ## Summary
 Maze Runner game is developed by Ryuki & Lien. We made this game as a project that is part of Introduction to Programming course. 
